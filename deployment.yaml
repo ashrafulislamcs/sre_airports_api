@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airport-api
+  labels:
+    app: airport-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airport-api
+  template:
+    metadata:
+      labels:
+        app: airport-api
+    spec:
+      containers:
+        - name: airport-api
+          image: ashrafulislamcs/airport-api:latest  # Replace with your image
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AWS_REGION
+              value: "ap-south-1"  # Set your AWS region
+            - name: S3_BUCKET_NAME
+              value: "airport-images-bucket"  # Set your S3 bucket name
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airport-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: airport-api
